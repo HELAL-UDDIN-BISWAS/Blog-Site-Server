@@ -76,12 +76,12 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/blog/:id', async (req, res) => {
-      const id = req.params.id
-      const query = { _id: new ObjectId(id) }
-      const result = await blogCollection.findOne(query)
-      res.send(result)
-    })
+    // app.get('/blog/:id', async (req, res) => {
+    //   const id = req.params.id
+    //   const query = { _id: new ObjectId(id) }
+    //   const result = await blogCollection.findOne(query)
+    //   res.send(result)
+    // })
 
     app.get('/wishlist/:id', async (req, res) => {
       const id = req.params.id
@@ -115,7 +115,7 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/wishlist',async(req,res)=>{
+    app.get('/wishlist',verifyToken,async(req,res)=>{
       let quer={}
       console.log('user:', req.user)
       if(req.query?.email !== req.query?.email){
