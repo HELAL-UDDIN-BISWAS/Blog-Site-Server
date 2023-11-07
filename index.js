@@ -98,7 +98,7 @@ async function run() {
 
     app.post("/jwt",async(req,res)=>{
       const data=req.body
-      const token=jwt.sign(data, process.env.JWT_TOKEN, {expiresIn: '1h'});
+      const token=jwt.sign(data, process.env.JWT_TOKEN, {expiresIn: '5h'});
       res
       .cookie('token',token,{
         httpOnly:true,
