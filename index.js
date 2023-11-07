@@ -83,6 +83,13 @@ async function run() {
       res.send(result)
     })
 
+    app.get('/wishlist/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result = await wishlistCollection.findOne(query)
+      res.send(result)
+    })
+
     app.post('/wishlist', async (req, res) => {
       const data = req.body
       const result = await wishlistCollection.insertOne(data)
@@ -99,6 +106,13 @@ async function run() {
         sameSite:'strict',
       })
       .send({success:true})
+    })
+
+     app.delete('/wishlist/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result = await wishlistCollection.deleteOne(query)
+      res.send(result)
     })
 
     app.get('/wishlist',async(req,res)=>{
