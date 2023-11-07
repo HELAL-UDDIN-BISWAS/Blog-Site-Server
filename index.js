@@ -76,12 +76,12 @@ async function run() {
       res.send(result)
     })
 
-    // app.get('/blog/:id', async (req, res) => {
-    //   const id = req.params.id
-    //   const query = { _id: new ObjectId(id) }
-    //   const result = await blogCollection.findOne(query)
-    //   res.send(result)
-    // })
+    app.get('/blog/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result = await blogCollection.findOne(query)
+      res.send(result)
+    })
 
     app.get('/wishlist/:id', async (req, res) => {
       const id = req.params.id
@@ -114,6 +114,30 @@ async function run() {
       const result = await wishlistCollection.deleteOne(query)
       res.send(result)
     })
+// =-=-=-=-=-=-=-=-Home
+    app.get("/blogForHome", async (req, res) => {
+      const result = await blogCollection
+        .find()
+        .sort({ postedTime: -1 })
+        .limit(6)
+        .toArray();
+      const formattedResult = result.map((blog) => {
+        const postedTime = new Date(blog.postedTime);
+        const formattedPostedTime = postedTime.toLocaleString("en-US", {
+          year: "2-digit",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        return {
+          ...blog,
+          postedTime: formattedPostedTime,
+        };
+      });
+      res.send(formattedResult);
+    });
+// =-=-=-=-=-=-=-=-Home
 
     app.get('/wishlist',verifyToken,async(req,res)=>{
       let quer={}
