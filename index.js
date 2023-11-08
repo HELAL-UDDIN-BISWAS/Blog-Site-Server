@@ -55,6 +55,7 @@ async function run() {
     // Send a ping to confirm a successful connection
     const blogCollection = client.db("blog").collection("allblogs");
     const wishlistCollection = client.db("blog").collection("wishlist");
+    const commandCollection = client.db("blog").collection("allcommand");
     // const bookingCollectio = client.db("blog").collection("bookings");
 
     app.post('/blog', async (req, res) => {
@@ -66,6 +67,16 @@ async function run() {
       res.send(result)
     })
 
+  
+    app.post('/allComment',async(req,res)=>{
+      const data=req.body;
+      const result =await commandCollection.insertOne(data)
+      res.send(result)
+    })
+
+    
+
+
     app.get('/blog', async (req, res) => {
       let quer = {}
       if (req.query.category) {
@@ -75,6 +86,12 @@ async function run() {
       const result = await cursor.toArray()
       res.send(result)
     })
+    app.get('/command',async(req,res)=>{
+      const cursor=commandCollection.find()
+      const query=await cursor.toArray()
+      res.send(query)
+    })
+
 
     app.get('/blog/:id', async (req, res) => {
       const id = req.params.id
@@ -90,6 +107,7 @@ async function run() {
       res.send(result)
     })
 
+    
     app.post('/wishlist', async (req, res) => {
       const data = req.body
       const result = await wishlistCollection.insertOne(data)
