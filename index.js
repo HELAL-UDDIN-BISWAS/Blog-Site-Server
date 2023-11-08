@@ -54,7 +54,6 @@ async function run() {
     const blogCollection = client.db("blog").collection("allblogs");
     const wishlistCollection = client.db("blog").collection("wishlist");
     const commandCollection = client.db("blog").collection("allcommand");
-    // const bookingCollectio = client.db("blog").collection("bookings");
 
     app.post('/blog', async (req, res) => {
       const document = {
@@ -177,9 +176,7 @@ async function run() {
 }
 run().catch(console.dir);
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
