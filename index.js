@@ -6,14 +6,13 @@ const jwt = require('jsonwebtoken');
 let cookieparser = require('cookie-parser')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
-// {
-//   origin:['http://localhost:5173'],
-//   credentials:true
-// }
-app.use(cors( {
-    origin:['http://localhost:5173'],
-    credentials:true
-  }));
+app.use(cors({
+  origin: ['https://assignment-11-server-mu-plum.vercel.app',
+    'http://localhost:5173'
+  ],
+
+  credentials: true
+}));
 app.use(express.json());
 app.use(cookieparser())
 
@@ -34,7 +33,6 @@ const verifyToken = async (req, res, next) => {
     next()
 
   })
-
 }
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.dhtqvw7.mongodb.net/?retryWrites=true&w=majority`;
@@ -67,15 +65,11 @@ async function run() {
       res.send(result)
     })
 
-  
-    app.post('/allComment',async(req,res)=>{
-      const data=req.body;
-      const result =await commandCollection.insertOne(data)
+    app.post('/allComment', async (req, res) => {
+      const data = req.body;
+      const result = await commandCollection.insertOne(data)
       res.send(result)
     })
-
-    
-
 
     app.get('/blog', async (req, res) => {
       let quer = {}
@@ -86,9 +80,9 @@ async function run() {
       const result = await cursor.toArray()
       res.send(result)
     })
-    app.get('/command',async(req,res)=>{
-      const cursor=commandCollection.find()
-      const query=await cursor.toArray()
+    app.get('/command', async (req, res) => {
+      const cursor = commandCollection.find()
+      const query = await cursor.toArray()
       res.send(query)
     })
 
@@ -107,32 +101,35 @@ async function run() {
       res.send(result)
     })
 
-    
+
     app.post('/wishlist', async (req, res) => {
       const data = req.body
       const result = await wishlistCollection.insertOne(data)
       res.send(result)
     })
 
-    app.post("/jwt",async(req,res)=>{
-      const data=req.body
-      const token=jwt.sign(data, process.env.JWT_TOKEN, {expiresIn: '5h'});
+    app.post("/jwt", async (req, res) => {
+      const data = req.body
+      const token = jwt.sign(data, process.env.JWT_TOKEN, { expiresIn: '5h' });
       res
-      .cookie('token',token,{
-        httpOnly:true,
-        secure:false,
-        sameSite:'strict',
-      })
-      .send({success:true})
+      .cookie(
+        "token",
+        tokenValue,
+        {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production" ? true: false,
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        })
+        .send({ success: true })
     })
 
-     app.delete('/wishlist/:id', async (req, res) => {
+    app.delete('/wishlist/:id', async (req, res) => {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
       const result = await wishlistCollection.deleteOne(query)
       res.send(result)
     })
-// =-=-=-=-=-=-=-=-Home
+    // =-=-=-=-=-=-=-=-Home
     app.get("/blogForHome", async (req, res) => {
       const result = await blogCollection
         .find()
@@ -155,20 +152,20 @@ async function run() {
       });
       res.send(formattedResult);
     });
-// =-=-=-=-=-=-=-=-Home
+    // =-=-=-=-=-=-=-=-Home
 
-    app.get('/wishlist',verifyToken,async(req,res)=>{
-      let quer={}
+    app.get('/wishlist', verifyToken, async (req, res) => {
+      let quer = {}
       console.log('user:', req.user)
-      if(req.query?.email !== req.query?.email){
-        return res.status(404).send({message:'not accis'})
+      if (req.query?.email !== req.query?.email) {
+        return res.status(404).send({ message: 'not accis' })
       }
-      if(req.query.email){
-        quer={email: req.query.email}
+      if (req.query.email) {
+        quer = { email: req.query.email }
       }
-      const cursor=wishlistCollection.find(quer)
-      const result=await cursor.toArray()
-        res.send(result)
+      const cursor = wishlistCollection.find(quer)
+      const result = await cursor.toArray()
+      res.send(result)
     })
 
     await client.db("admin").command({ ping: 1 });
